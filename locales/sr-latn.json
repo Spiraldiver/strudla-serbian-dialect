@@ -267,7 +267,21 @@
     "mixolydian": "miksolidijska",
     "aeolian": "eolska",
     "locrian": "lokrijska",
-    "blues": "bluz"
+    "blues": "bluz",
+
+    "_multiword": "Multi-word tonal scales are written with colons in mini (c:phrygian:dominant); token-wise translation composes them, so each WORD needs its own entry.",
+    "dominant": "dominantna",
+    "harmonic": "harmonska",
+    "hungarian": "mađarska",
+    "double": "dvostruka",
+    "neapolitan": "napuljska",
+    "gypsy": "ciganska",
+    "byzantine": "vizantijska",
+    "oriental": "orijentalna",
+    "persian": "persijska",
+    "todi": "todi",
+    "augmented": "uvećana",
+    "diminished": "umanjena"
   },
 
   "notes": {

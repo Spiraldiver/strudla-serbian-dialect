@@ -748,6 +748,43 @@
     ],
     "blues": [
       "блуз"
+    ],
+    "_multiword": "Multi-word tonal scales are written with colons in mini (c:phrygian:dominant); token-wise translation composes them, so each WORD needs its own entry.",
+    "dominant": [
+      "доминантна"
+    ],
+    "harmonic": [
+      "хармонска"
+    ],
+    "hungarian": [
+      "мађарска"
+    ],
+    "double": [
+      "двострука"
+    ],
+    "neapolitan": [
+      "напуљска"
+    ],
+    "gypsy": [
+      "циганска"
+    ],
+    "byzantine": [
+      "византијска"
+    ],
+    "oriental": [
+      "оријентална"
+    ],
+    "persian": [
+      "персијска"
+    ],
+    "todi": [
+      "тоди"
+    ],
+    "augmented": [
+      "увећана"
+    ],
+    "diminished": [
+      "умањена"
     ]
   },
   "notes": {
