@@ -6,17 +6,82 @@ latinicom i ćirilicom.**
 *A Serbian dialect for Strudel — live coding in Serbian, in both Latin and
 Cyrillic script.*
 
+## Primer / Primary example
+
+**Balkanski 9/8 (2+2+2+3), 300 osmina u minuti, aranžman u 4 dela.**
+Bubnjevi iz `samples_percs` crate-a, bas ulazi na 8. taktu i ostaje stabilan,
+sintisajzer ima sopstveni aranžman u hidžazu (frigijska dominantna).
+
+*Balkan 9/8 grouped 2+2+2+3 at 300 eighths per minute, arranged in four
+sections. Drums from the `samples_percs` crate, bass enters at bar 8 and stays
+stable, and the synth runs its own arrangement in hijaz (phrygian dominant).*
+
 ```js
 await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
+samples('github:Spiraldiver/samples_percs')
 
-zvuk("bubanj [~ doboš] bubanj pljesak")
-  .brzo(2)
-  .lestvica("c:dur")
-  .jačina(0.8)
-  .soba(0.3)
+postaviCkm(300/9)
+
+const kik    = broj("<0 ~ ~ ~ 0 ~ ~ ~ ~>*9").zvuk("crate_bd").preseci(1).jačina(1.0)
+const dobos  = broj("<~ ~ 0 ~ ~ ~ 0 ~ ~>*9").zvuk("crate_sd").preseci(2).jačina(0.62)
+const hetovi = broj("<0 0 0 0 0 0 0 0 0>*9").zvuk("crate_hh").preseci(3)
+  .jačina("0.9 0.35 0.7 0.35 0.7 0.35 0.9 0.35 0.35")
+const perk   = broj("<~ ~ ~ ~ ~ ~ 0 ~ ~>*9").zvuk("crate_rd").preseci(4).jačina(0.44)
+
+const filKik = broj("<~ ~ ~ ~ ~ ~ ~ 0 ~>*9").zvuk("crate_bd").preseci(5).jačina(0.7)
+const filDob = broj("<~ ~ ~ ~ ~ ~ ~ 0 0>*9").zvuk("crate_sd").preseci(6).jačina(0.45)
+
+const bas = nota("d2 ~ d2 ~ a1 ~ bb1 ~ ~")
+  .zvuk("testera").niskopropusni(400).rezonanca(6).jačina(0.7)
+
+const sint = nota("0 1 4 3 2 1 0 -3 [0 1]")
+  .lestvica("d:frigijska:dominantna")
+  .zvuk("testera")
+  .niskopropusni(sinus.opseg(600, 3200)).rezonanca(14)
+  .kašnjenje(0.3).sinhronKašnjenja(3/9)
+  .soba(0.3).jačina(0.45)
+
+const bubnjeviArr = aranžman(
+  [4, slog(kik, hetovi)],
+  [4, slog(kik, hetovi, dobos)],
+  [4, slog(kik, hetovi, dobos, perk).poslednjiOd(4, x => slog(x, filDob))],
+  [4, slog(kik, hetovi, dobos, perk).poslednjiOd(4, x => slog(x, filKik, filDob))]
+)
+
+const basArr = aranžman([8, tišina], [8, bas])
+
+const sintArr = aranžman(
+  [2, tišina],
+  [2, sint],
+  [2, sint.svaki(2, unazad)],
+  [2, sint.smenjuj(3)],
+  [2, sint.sporo(2)],
+  [2, sint.razdvoji(unazad)],
+  [2, sint.ponekadSa(0.5, x => x.sporo(2))],
+  [2, sint.sporo(2).razdvoji(unazad)]
+)
+
+$: slog(bubnjeviArr, basArr, sintArr)
 ```
 
-Isti obrazac, ćirilicom / the same pattern in Cyrillic:
+[▶ otvori u strudel.cc](https://strudel.cc) — zalepi kod gore, pa **play**.
+Fajl: [`examples/balkan-9-8-aranzman.js`](examples/balkan-9-8-aranzman.js)
+
+### Dva pravila koja drže ritam
+
+1. **Sve je poravnato na 9.** Svaki obrazac ima tačno 9 koraka, a sve što uzima
+   deo ciklusa (`smenjuj`, `sinhronKašnjenja`) mora da koristi delilac broja 9 —
+   `3` ili `9`, nikad `2`, `4`, `8`, `16`. `smenjuj(4)` pomera za 2.25 koraka.
+2. **Glas sa `preseci()` se nikad ne transformiše.** `često`, `ponekad`,
+   `razdvoji` i `preklopi` slažu KOPIJU obrasca; kopija nosi isti broj grupe i
+   preseca original, pa puls nestaje. Dopune idu na zaseban glas i zasebnu grupu.
+
+*1. Everything is aligned to 9 — any argument taking a fraction of a cycle must
+use a divisor of 9. 2. A voice with `preseci()` (cut) is never transformed:
+`često`/`razdvoji` stack a copy, the copy carries the same cut group and kills
+the original, and the pulse disappears.*
+
+Ćirilica radi isto / Cyrillic works identically:
 
 ```js
 звук("бубањ [~ добош] бубањ пљесак").брзо(2).јачина(0.8)
