@@ -38,7 +38,7 @@ const sint = nota("0 1 4 3 2 1 0 -3 [0 1]")
   .lestvica("d:frigijska:dominantna")
   .zvuk("testera")
   .niskopropusni(sinus.opseg(600, 3200)).rezonanca(14)
-  .kašnjenje(0.3).sinhronKašnjenja(3/9)
+  .kašnjenje(0.3).sinhroKašnjenja(3/9)
   .soba(0.3).jačina(0.45)
 
 const bubnjeviArr = aranžman(
@@ -70,7 +70,7 @@ Fajl: [`examples/balkan-9-8-aranzman.js`](examples/balkan-9-8-aranzman.js)
 ### Dva pravila koja drže ritam
 
 1. **Sve je poravnato na 9.** Svaki obrazac ima tačno 9 koraka, a sve što uzima
-   deo ciklusa (`smenjuj`, `sinhronKašnjenja`) mora da koristi delilac broja 9 —
+   deo ciklusa (`smenjuj`, `sinhroKašnjenja`) mora da koristi delilac broja 9 —
    `3` ili `9`, nikad `2`, `4`, `8`, `16`. `smenjuj(4)` pomera za 2.25 koraka.
 2. **Glas sa `preseci()` se nikad ne transformiše.** `često`, `ponekad`,
    `razdvoji` i `preklopi` slažu KOPIJU obrasca; kopija nosi isti broj grupe i

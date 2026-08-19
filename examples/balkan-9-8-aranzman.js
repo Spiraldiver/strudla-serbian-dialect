@@ -19,7 +19,7 @@ const sint = nota("0 1 4 3 2 1 0 -3 [0 1]")
   .lestvica("d:frigijska:dominantna")
   .zvuk("testera")
   .niskopropusni(sinus.opseg(600, 3200)).rezonanca(14)
-  .kašnjenje(0.3).sinhronKašnjenja(3/9)
+  .kašnjenje(0.3).sinhroKašnjenja(3/9)
   .soba(0.3).jačina(0.45)
 
 const bubnjeviArr = aranžman(
