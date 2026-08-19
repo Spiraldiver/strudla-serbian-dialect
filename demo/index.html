@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Vrtlog demo</title>
+  <title>Strudla demo</title>
   <style>
     body { margin: 0; background: #111; color: #eee; font-family: monospace; padding: 16px; }
     h1 { font-size: 16px; color: #8f8; margin: 0 0 4px; }
@@ -17,7 +17,7 @@
   </style>
 </head>
 <body>
-<h1>Vrtlog — srpski dijalekt za Strudel</h1>
+<h1>Strudla — srpski dijalekt za Strudel</h1>
 <div class="sub">
   Ova strana ne pušta zvuk. Proverava da se rečnik učitava i da prevod radi.<br>
   This page plays no audio. It checks that the dictionary loads and translation works.
@@ -34,7 +34,7 @@
   console.error = (...a) => { log(a.join(' ').slice(0, 2000), 'err'); origErr(...a); };
   window.addEventListener('error', (e) => log('window error: ' + e.message, 'err'));
 
-  // Minimal Strudel stand-in: Vrtlog only needs globals plus a Pattern whose
+  // Minimal Strudel stand-in: Strudla only needs globals plus a Pattern whose
   // prototype it can extend, so the dictionary can be exercised without audio.
   class Pattern {
     constructor() { this.log = []; }
@@ -56,8 +56,8 @@
     const q = new URLSearchParams(location.search);
     const locale = q.get('locale') || 'sr-latn';
 
-    const mod = await import('../dist/vrtlog.js');
-    const info = await mod.initVrtlog({ locale, quiet: true });
+    const mod = await import('../dist/strudla.js');
+    const info = await mod.initStrudla({ locale, quiet: true });
 
     log(`učitano / loaded: ${info.active.join(', ')}`, 'head');
     log(`  funkcije / functions : ${info.counts.functions}`);
@@ -88,7 +88,7 @@
     const rows = Object.entries(info.functions)
       .sort((a, b) => a[0].localeCompare(b[0], 'sr'));
     document.getElementById('tbl').innerHTML =
-      '<tr><td class="sr"><b>Vrtlog</b></td><td><b>Strudel</b></td></tr>' +
+      '<tr><td class="sr"><b>Strudla</b></td><td><b>Strudel</b></td></tr>' +
       rows.map(([sr, en]) => `<tr><td class="sr">${sr}</td><td>${en}</td></tr>`).join('');
 
     log(`\nOK — ${rows.length} psevdonima aktivno. Dodaj ?locale=sr-cyrl za ćirilicu.`, 'head');

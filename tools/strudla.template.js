@@ -1,9 +1,9 @@
-// Vrtlog — srpski dijalekt za Strudel  /  Serbian dialect for Strudel
-// https://github.com/Spiraldiver/vrtlog-serbian-dialect                License: AGPL-3.0
+// Strudla — srpski dijalekt za Strudel  /  Serbian dialect for Strudel
+// https://github.com/Spiraldiver/strudla-serbian-dialect                License: AGPL-3.0
 //
 // Loads into strudel.cc with a plain dynamic import and no changes to Strudel:
 //
-//   await import('https://spiraldiver.github.io/vrtlog-serbian-dialect/dist/vrtlog.js')
+//   await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
 //
 // Strudel's transpiler does not rewrite import expressions, so this is ordinary
 // JavaScript. The module installs itself on import — importing IS the setup.
@@ -15,7 +15,7 @@ const SR_CYRL = /*__SR_CYRL__*/null;
 
 const LOCALES = { 'sr-latn': SR_LATN, 'sr': SR_LATN, 'sr-cyrl': SR_CYRL, 'cyr': SR_CYRL };
 
-// Every alias actually installed, so exportAliases()/vrtlogInfo() report what
+// Every alias actually installed, so exportAliases()/strudlaInfo() report what
 // is genuinely live rather than what the dictionary hoped for.
 const installed = { functions: new Map(), sounds: new Map(), scales: new Map(), colors: new Map() };
 let patternProto = null;
@@ -45,8 +45,11 @@ function findPatternProto() {
 
 function aliasFunction(canonical, alias) {
   let hit = false;
-  // global form:  zvuk("bd")
-  if (typeof globalThis[canonical] === 'function' && globalThis[alias] === undefined) {
+  // Global form: zvuk("bd"). Note the check is `!== undefined`, not
+  // `typeof === 'function'` — several Strudel globals are Pattern VALUES rather
+  // than functions (sine, cosine, saw, tri, square, rand, perlin, silence).
+  // Testing for a function silently skipped every one of them.
+  if (globalThis[canonical] !== undefined && globalThis[alias] === undefined) {
     globalThis[alias] = globalThis[canonical];
     hit = true;
   }
@@ -126,7 +129,7 @@ function wrapValueFn(name, mapKey, aliasNames) {
 
   // Already wrapped by an earlier locale — the shared map now holds the new
   // words, so only the aliases of this locale still need binding.
-  if (orig.__vrtlog) {
+  if (orig.__strudla) {
     for (const a of aliasNames) if (globalThis[a] === undefined) globalThis[a] = orig;
     return;
   }
@@ -135,7 +138,7 @@ function wrapValueFn(name, mapKey, aliasNames) {
     if (args.length) args[0] = translateArg(args[0], map);
     return orig.apply(this, args);
   };
-  wrapped.__vrtlog = true;
+  wrapped.__strudla = true;
   Object.setPrototypeOf(wrapped, orig);
   Object.assign(wrapped, orig);
   globalThis[name] = wrapped;
@@ -147,13 +150,13 @@ function wrapValueFn(name, mapKey, aliasNames) {
 
   // keep the Pattern method in step, so .zvuk("bubanj") translates too
   const proto = findPatternProto();
-  if (proto && typeof proto[name] === 'function' && !proto[name].__vrtlog) {
+  if (proto && typeof proto[name] === 'function' && !proto[name].__strudla) {
     const m = proto[name];
     const mw = function (...args) {
       if (args.length) args[0] = translateArg(args[0], map);
       return m.apply(this, args);
     };
-    mw.__vrtlog = true;
+    mw.__strudla = true;
     proto[name] = mw;
   }
 }
@@ -201,13 +204,13 @@ function applyLocale(dict) {
   return n;
 }
 
-export async function initVrtlog(options = {}) {
+export async function initStrudla(options = {}) {
   const { locale = 'sr-latn', note = false, quiet = false } = options;
   const codes = asList(locale);
   let total = 0;
   for (const code of codes) {
     const dict = LOCALES[String(code).toLowerCase()];
-    if (!dict) { console.warn(`[vrtlog] nepoznat lokalitet: ${code}`); continue; }
+    if (!dict) { console.warn(`[strudla] nepoznat lokalitet: ${code}`); continue; }
     total += applyLocale(dict);
     if (note && dict.notes) {
       for (const [en, aliases] of Object.entries(dict.notes)) {
@@ -218,17 +221,17 @@ export async function initVrtlog(options = {}) {
     active.push(code);
   }
   if (!findPatternProto() && !quiet) {
-    console.warn('[vrtlog] Pattern prototype nije pronađen — metode (.brzo) nisu instalirane. ' +
-                 'Pokreni initVrtlog() iz strudel.cc REPL-a.');
+    console.warn('[strudla] Pattern prototype nije pronađen — metode (.brzo) nisu instalirane. ' +
+                 'Pokreni initStrudla() iz strudel.cc REPL-a.');
   }
   if (!quiet) {
-    console.log(`[vrtlog] ${active.join(', ')} — ${total} psevdonima instalirano. ` +
+    console.log(`[strudla] ${active.join(', ')} — ${total} psevdonima instalirano. ` +
                 `Probaj: zvuk("bubanj doboš").brzo(2)`);
   }
-  return vrtlogInfo();
+  return strudlaInfo();
 }
 
-export function vrtlogInfo() {
+export function strudlaInfo() {
   return {
     active: [...active],
     functions: Object.fromEntries(installed.functions),
@@ -254,18 +257,18 @@ export function recnik(word) {
       ?? null;
 }
 
-globalThis.initVrtlog = initVrtlog;
-globalThis.vrtlogInfo = vrtlogInfo;
+globalThis.initStrudla = initStrudla;
+globalThis.strudlaInfo = strudlaInfo;
 globalThis.recnik = recnik;
 globalThis.rečnik = recnik;
 
 // ── self-install on import ─────────────────────────────────────────────────
 // Importing the module is the whole setup step. Guarded so a second import
 // (or a re-run of the same line) does not reinstall or re-log.
-if (!globalThis.__vrtlogLoaded) {
-  globalThis.__vrtlogLoaded = true;
-  await initVrtlog();
+if (!globalThis.__strudlaLoaded) {
+  globalThis.__strudlaLoaded = true;
+  await initStrudla();
 }
 
 export { LOCALES };
-export default initVrtlog;
+export default initStrudla;

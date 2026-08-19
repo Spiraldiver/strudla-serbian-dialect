@@ -1,14 +1,16 @@
 {
   "code": "sr-cyrl",
-  "name": "Vrtlog — српски (ћирилица)",
+  "name": "Strudla — српски (ћирилица)",
   "direction": "ltr",
   "_note": "Canonical source. Proper Serbian orthography with diacritics. tools/build.py generates the ASCII-folded aliases (požuri -> pozuri) and the full Cyrillic locale from this file — do not hand-maintain those.",
   "functions": {
     "s": [
-      "звук"
+      "звук",
+      "з"
     ],
     "sound": [
-      "звук"
+      "звук",
+      "з"
     ],
     "note": [
       "нота"
@@ -355,6 +357,234 @@
     "color": [
       "боја"
     ],
+    "often": [
+      "често"
+    ],
+    "rarely": [
+      "ретко"
+    ],
+    "someCyclesBy": [
+      "некиЦиклусиСа"
+    ],
+    "firstOf": [
+      "првиОд"
+    ],
+    "lastOf": [
+      "последњиОд"
+    ],
+    "iterBack": [
+      "смењујУназад"
+    ],
+    "chunkBack": [
+      "деоУназад"
+    ],
+    "juxBy": [
+      "раздвојиСа"
+    ],
+    "early": [
+      "раније"
+    ],
+    "late": [
+      "касније"
+    ],
+    "swing": [
+      "њихање"
+    ],
+    "swingBy": [
+      "њихањеСа"
+    ],
+    "squeeze": [
+      "утисни"
+    ],
+    "stut": [
+      "муцање"
+    ],
+    "undegrade": [
+      "обнови"
+    ],
+    "undegradeBy": [
+      "обновиСа"
+    ],
+    "invert": [
+      "изокрени"
+    ],
+    "pace": [
+      "корак"
+    ],
+    "density": [
+      "густина"
+    ],
+    "drop": [
+      "избаци"
+    ],
+    "grow": [
+      "расти"
+    ],
+    "shrink": [
+      "скупи"
+    ],
+    "contract": [
+      "стегни"
+    ],
+    "fit": [
+      "уклопи"
+    ],
+    "pick": [
+      "одабери"
+    ],
+    "ceil": [
+      "заокружиГоре"
+    ],
+    "pow": [
+      "степен"
+    ],
+    "euclidLegato": [
+      "еуклидЛегато"
+    ],
+    "range2": [
+      "опсег2"
+    ],
+    "rangex": [
+      "опсегX"
+    ],
+    "loop": [
+      "петља"
+    ],
+    "loopAt": [
+      "петљаНа"
+    ],
+    "loopBegin": [
+      "петљаПочетак"
+    ],
+    "loopEnd": [
+      "петљаКрај"
+    ],
+    "slide": [
+      "клизање"
+    ],
+    "duration": [
+      "трајање"
+    ],
+    "offset": [
+      "одмак"
+    ],
+    "anchor": [
+      "сидро"
+    ],
+    "vib": [
+      "дрхтај"
+    ],
+    "vibmod": [
+      "дрхтајДубина"
+    ],
+    "phaser": [
+      "фејзер"
+    ],
+    "dry": [
+      "суво"
+    ],
+    "postgain": [
+      "накнаднаЈачина"
+    ],
+    "roomsize": [
+      "величинаСобе"
+    ],
+    "rsize": [
+      "величинаПростора"
+    ],
+    "noise": [
+      "шум"
+    ],
+    "dist": [
+      "дисторзија"
+    ],
+    "chord": [
+      "акорд"
+    ],
+    "voicing": [
+      "распоред"
+    ],
+    "voicings": [
+      "распореди"
+    ],
+    "tune": [
+      "наштимуј"
+    ],
+    "scaleTranspose": [
+      "транспонујУЛествици"
+    ],
+    "rootNotes": [
+      "основниТонови"
+    ],
+    "mode": [
+      "начин"
+    ],
+    "ftype": [
+      "типФилтера"
+    ],
+    "lpq": [
+      "нпфРезонанца"
+    ],
+    "hpq": [
+      "впфРезонанца"
+    ],
+    "bpq": [
+      "ппфРезонанца"
+    ],
+    "lpenv": [
+      "нпфОмотач"
+    ],
+    "hpenv": [
+      "впфОмотач"
+    ],
+    "bpenv": [
+      "ппфОмотач"
+    ],
+    "lpa": [
+      "нпфНапад"
+    ],
+    "lpd": [
+      "нпфОпадање"
+    ],
+    "lps": [
+      "нпфОдржање"
+    ],
+    "lpr": [
+      "нпфОтпуштање"
+    ],
+    "pianoroll": [
+      "клавирскаТрака"
+    ],
+    "scrub": [
+      "премотај"
+    ],
+    "sine": [
+      "синус"
+    ],
+    "cosine": [
+      "косинус"
+    ],
+    "saw": [
+      "пила"
+    ],
+    "isaw": [
+      "обрнутаПила"
+    ],
+    "tri": [
+      "троугаони"
+    ],
+    "square": [
+      "квадратни"
+    ],
+    "rand": [
+      "случајно"
+    ],
+    "irand": [
+      "случајноЦело"
+    ],
+    "run": [
+      "низ"
+    ],
     "cpm": [
       "циклусаУМинути",
       "цкм"
@@ -521,7 +751,7 @@
     ]
   },
   "notes": {
-    "_note": "Serbian follows the Germanic convention: H is B-natural, B is B-flat. Off by default — enable with initVrtlog({ note: true }), since it shadows the standard b.",
+    "_note": "Serbian follows the Germanic convention: H is B-natural, B is B-flat. Off by default — enable with initStrudla({ note: true }), since it shadows the standard b.",
     "b": [
       "х"
     ]

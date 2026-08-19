@@ -1,4 +1,4 @@
-// Vrtlog runtime test against a mock Strudel.
+// Strudla runtime test against a mock Strudel.
 // Verifies the alias installation actually works, rather than assuming it does.
 //   node tools/test.mjs
 
@@ -7,7 +7,7 @@ const ok = (cond, msg) => { cond ? (pass++, console.log('  ok   ' + msg))
                                  : (fail++, console.log('  FAIL ' + msg)); };
 
 // ── mock Strudel ───────────────────────────────────────────────────────────
-// Mirrors the shapes Vrtlog depends on: a Pattern class with chainable
+// Mirrors the shapes Strudla depends on: a Pattern class with chainable
 // methods, controls exposed on globalThis, and string args for s()/scale().
 class Pattern {
   constructor(v = []) { this.v = v; this.log = []; }
@@ -26,6 +26,14 @@ globalThis.note = (x) => mk(`note(${x})`);
 globalThis.scale = (x) => mk(`scale(${x})`);
 globalThis.fast = (n, p) => p.fast(n);
 globalThis.silence = new Pattern();
+// These are Pattern VALUES on globalThis, not functions — the case that was
+// silently skipped when aliasing tested `typeof === 'function'`.
+globalThis.sine = new Pattern();
+globalThis.cosine = new Pattern();
+globalThis.saw = new Pattern();
+globalThis.tri = new Pattern();
+globalThis.square = new Pattern();
+globalThis.rand = new Pattern();
 // Strudel's transpiler rewrites "..." into mini(...) BEFORE the control runs,
 // so controls receive a Pattern, not a string. This mock mini reproduces that.
 class MiniPat {
@@ -38,11 +46,11 @@ globalThis.mini = (str) => new MiniPat(String(str).split(/\s+/));
 globalThis.stack = (...a) => mk('stack');
 globalThis.hush = () => 'hush';
 
-const { initVrtlog, vrtlogInfo, recnik } = await import('../dist/vrtlog.js');
+const { initStrudla, strudlaInfo, recnik } = await import('../dist/strudla.js');
 
 // ── 1. install ─────────────────────────────────────────────────────────────
 console.log('\n1. installation');
-const info = await initVrtlog({ quiet: true });  // self-installed on import; this is idempotent
+const info = await initStrudla({ quiet: true });  // self-installed on import; this is idempotent
 ok(info.counts.functions >= 15, `${info.counts.functions} function aliases installed (mock exposes only a few Strudel names)`);
 ok(info.counts.sounds > 10, `${info.counts.sounds} sound aliases installed`);
 ok(info.counts.scales > 10, `${info.counts.scales} scale aliases installed`);
@@ -90,6 +98,20 @@ ok(mp2.log[0] === 's(bd:2)', `sample:index head translated   (got ${mp2.log[0]})
 const mp3 = globalThis.scale(globalThis.mini('c:dur'));
 ok(mp3.log[0] === 'scale(c:major)', `root:scale tail translated   (got ${mp3.log[0]})`);
 
+// ── 5c. Pattern-VALUED globals (signals), not functions ───────────────────
+console.log('\n5c. signal globals and short forms');
+ok(globalThis.sinus === globalThis.sine, 'sinus -> sine (Pattern value, not a function)');
+ok(globalThis.kosinus === globalThis.cosine, 'kosinus -> cosine');
+ok(globalThis.pila === globalThis.saw, 'pila -> saw');
+ok(globalThis.trougaoni === globalThis.tri, 'trougaoni -> tri');
+ok(globalThis.kvadratni === globalThis.square, 'kvadratni -> square');
+ok(globalThis['slučajno'] === globalThis.rand, 'slučajno -> rand');
+ok(globalThis['tišina'] === globalThis.silence, 'tišina -> silence');
+ok(typeof globalThis.z === 'function', 'z installed (sound = s = z = zvuk)');
+ok(globalThis.z === globalThis.zvuk, 'z and zvuk are the same function');
+const pz = globalThis.z('bubanj');
+ok(pz.log[0] === 's(bd)', `z("bubanj") translates too   (got ${pz.log[0]})`);
+
 // ── 6. scale translation ───────────────────────────────────────────────────
 console.log('\n6. scale translation');
 const p5 = globalThis.scale('c:dur');
@@ -119,7 +141,7 @@ ok(p7.log.includes('fast(4)'), 'English API unchanged');
 
 // ── 10. Cyrillic locale ────────────────────────────────────────────────────
 console.log('\n10. Cyrillic');
-await initVrtlog({ locale: 'sr-cyrl', quiet: true });
+await initStrudla({ locale: 'sr-cyrl', quiet: true });
 ok(typeof globalThis.звук === 'function', 'звук installed');
 ok(typeof Pattern.prototype.брзо === 'function', 'брзо installed on Pattern');
 const p8 = globalThis.звук('бубањ').брзо(2);
