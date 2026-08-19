@@ -1,19 +1,14 @@
 await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
 samples('github:Spiraldiver/samples_percs')
 
-// 9/8 — 2+2+2+3 (dajčovo), 300 osmina u minuti, 1 ciklus = 1 takt
 postaviCkm(300/9)
 
-// PRAVILO 1: svaki obrazac ima tačno 9 koraka
-// PRAVILO 2: glas sa preseci() se NIKAD ne transformiše — često/razdvoji
-//            slažu KOPIJU, a kopija u istoj grupi preseca original
 const kik    = broj("<0 ~ ~ ~ 0 ~ ~ ~ ~>*9").zvuk("crate_bd").preseci(1).jačina(1.0)
 const dobos  = broj("<~ ~ 0 ~ ~ ~ 0 ~ ~>*9").zvuk("crate_sd").preseci(2).jačina(0.62)
 const hetovi = broj("<0 0 0 0 0 0 0 0 0>*9").zvuk("crate_hh").preseci(3)
   .jačina("0.9 0.35 0.7 0.35 0.7 0.35 0.9 0.35 0.35")
 const perk   = broj("<~ ~ ~ ~ ~ ~ 0 ~ ~>*9").zvuk("crate_rd").preseci(4).jačina(0.44)
 
-// dopune: zasebne grupe (5, 6) — ne diraju puls
 const filKik = broj("<~ ~ ~ ~ ~ ~ ~ 0 ~>*9").zvuk("crate_bd").preseci(5).jačina(0.7)
 const filDob = broj("<~ ~ ~ ~ ~ ~ ~ 0 0>*9").zvuk("crate_sd").preseci(6).jačina(0.45)
 
@@ -27,7 +22,6 @@ const sint = nota("0 1 4 3 2 1 0 -3 [0 1]")
   .kašnjenje(0.3).sinhronKašnjenja(3/9)
   .soba(0.3).jačina(0.45)
 
-// dopuna SAMO na poslednjem taktu svake četvorke — poslednjiOd(4, ...)
 const bubnjeviArr = aranžman(
   [4, slog(kik, hetovi)],
   [4, slog(kik, hetovi, dobos)],
@@ -37,7 +31,6 @@ const bubnjeviArr = aranžman(
 
 const basArr = aranžman([8, tišina], [8, bas])
 
-// sporo(2) umesto brzo(): pola brzine legne na 2-taktni deo tačno
 const sintArr = aranžman(
   [2, tišina],
   [2, sint],
