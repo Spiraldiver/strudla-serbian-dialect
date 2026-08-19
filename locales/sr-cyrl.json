@@ -1,6 +1,6 @@
 {
   "code": "sr-cyrl",
-  "name": "Strudla — српски (ћирилица)",
+  "name": "Vrtlog — српски (ћирилица)",
   "direction": "ltr",
   "_note": "Canonical source. Proper Serbian orthography with diacritics. tools/build.py generates the ASCII-folded aliases (požuri -> pozuri) and the full Cyrillic locale from this file — do not hand-maintain those.",
   "functions": {
@@ -521,7 +521,7 @@
     ]
   },
   "notes": {
-    "_note": "Serbian follows the Germanic convention: H is B-natural, B is B-flat. Off by default — enable with initStrudla({ note: true }), since it shadows the standard b.",
+    "_note": "Serbian follows the Germanic convention: H is B-natural, B is B-flat. Off by default — enable with initVrtlog({ note: true }), since it shadows the standard b.",
     "b": [
       "х"
     ]

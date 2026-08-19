@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Strudla build + validation.
+"""Vrtlog build + validation.
 
 Reads locales/sr-latn.json (the only hand-maintained file) and produces:
   locales/sr-cyrl.json   full Cyrillic locale, transliterated 1:1
-  dist/strudla.js        single-file loader with both locales embedded
+  dist/vrtlog.js        single-file loader with both locales embedded
 
 Validation runs on every build:
   1. every English key must exist in Strudel's canonical registered-name list
@@ -153,7 +153,7 @@ def validate(latn, canon, icelandic):
                 + ", ".join(missing))
         extra = sorted(ours - is_fn)
         if extra:
-            warnings.append(f"[4] {len(extra)} beyond the Icelandic set (fine — Strudla is larger)")
+            warnings.append(f"[4] {len(extra)} beyond the Icelandic set (fine — Vrtlog is larger)")
     return errors, warnings
 
 
@@ -189,7 +189,7 @@ def main():
 
     cyrl = dict(latn)
     cyrl["code"] = "sr-cyrl"
-    cyrl["name"] = "Strudla — српски (ћирилица)"
+    cyrl["name"] = "Vrtlog — српски (ћирилица)"
     for sec in ("functions", "colors", "sounds", "scales", "notes"):
         if sec in cyrl:
             cyrl[sec] = cyrillicise(latn[sec])
@@ -198,19 +198,19 @@ def main():
     (ROOT / "locales" / "sr-cyrl.json").write_text(
         json.dumps(cyrl, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    # ---- emit dist/strudla.js -------------------------------------------
-    tpl = (ROOT / "tools" / "strudla.template.js").read_text(encoding="utf-8")
+    # ---- emit dist/vrtlog.js -------------------------------------------
+    tpl = (ROOT / "tools" / "vrtlog.template.js").read_text(encoding="utf-8")
     js = tpl.replace("/*__SR_LATN__*/null",
                      json.dumps(latn_out, ensure_ascii=False)) \
             .replace("/*__SR_CYRL__*/null",
                      json.dumps(cyrl, ensure_ascii=False))
-    (ROOT / "dist" / "strudla.js").write_text(js, encoding="utf-8")
+    (ROOT / "dist" / "vrtlog.js").write_text(js, encoding="utf-8")
 
     n_fn = len([k for k in latn["functions"] if not k.startswith("_")])
     n_alias = sum(len(as_list(v)) for k, v in latn_out["functions"].items() if not k.startswith("_"))
     print(f"\nOK  {n_fn} functions -> {n_alias} Latin aliases (incl. ASCII-folded)")
     print(f"OK  locales/sr-cyrl.json written")
-    print(f"OK  dist/strudla.js written ({(ROOT / 'dist' / 'strudla.js').stat().st_size} bytes)")
+    print(f"OK  dist/vrtlog.js written ({(ROOT / 'dist' / 'vrtlog.js').stat().st_size} bytes)")
     return 0
 
 

@@ -1,7 +1,7 @@
-// Strudla — primeri / examples
+// Vrtlog — primeri / examples
 // Zalepi u strudel.cc  /  paste into strudel.cc
 
-await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
+await import('https://spiraldiver.github.io/vrtlog-serbian-dialect/dist/vrtlog.js')
 
 // 1. osnovni ritam
 zvuk("bubanj [~ doboš] bubanj doboš").brzo(2)
@@ -19,8 +19,8 @@ zvuk("bubanj*4").svaki(3, unazad).razdvoji(unazad)
 звук("бубањ [~ добош]").брзо(2).соба(0.3)
 
 // 6. oba pisma odjednom
-await initStrudla({ locale: ['sr-latn', 'sr-cyrl'] })
+await initVrtlog({ locale: ['sr-latn', 'sr-cyrl'] })
 
 // 7. šta je koja reč?
 rečnik("brzo")      // -> "fast"
-strudlaInfo()       // -> svi aktivni psevdonimi
+vrtlogInfo()       // -> svi aktivni psevdonimi

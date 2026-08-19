@@ -1,9 +1,9 @@
-// Strudla — srpski dijalekt za Strudel  /  Serbian dialect for Strudel
-// https://github.com/Spiraldiver/strudla-serbian-dialect                License: AGPL-3.0
+// Vrtlog — srpski dijalekt za Strudel  /  Serbian dialect for Strudel
+// https://github.com/Spiraldiver/vrtlog-serbian-dialect                License: AGPL-3.0
 //
 // Loads into strudel.cc with a plain dynamic import and no changes to Strudel:
 //
-//   await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
+//   await import('https://spiraldiver.github.io/vrtlog-serbian-dialect/dist/vrtlog.js')
 //
 // Strudel's transpiler does not rewrite import expressions, so this is ordinary
 // JavaScript. The module installs itself on import — importing IS the setup.
@@ -15,7 +15,7 @@ const SR_CYRL = /*__SR_CYRL__*/null;
 
 const LOCALES = { 'sr-latn': SR_LATN, 'sr': SR_LATN, 'sr-cyrl': SR_CYRL, 'cyr': SR_CYRL };
 
-// Every alias actually installed, so exportAliases()/strudlaInfo() report what
+// Every alias actually installed, so exportAliases()/vrtlogInfo() report what
 // is genuinely live rather than what the dictionary hoped for.
 const installed = { functions: new Map(), sounds: new Map(), scales: new Map(), colors: new Map() };
 let patternProto = null;
@@ -76,8 +76,41 @@ function buildValueMap(section) {
 
 function translateTokens(str, map) {
   // Rewrite only bare words, leaving mini-notation punctuation
-  // (* / ! @ < > [ ] { } , ~ .) and :indices untouched.
+  // (* / ! @ < > [ ] { } , ~ .) and :indices untouched. Splitting on word
+  // boundaries also handles both colon conventions for free: "bubanj:2"
+  // (sample:index, translate the head) and "c:dur" (root:scale, translate the
+  // tail) each come out right without special casing.
   return String(str).replace(/[\p{L}\p{M}\w]+/gu, (tok) => map.get(tok.toLowerCase()) ?? tok);
+}
+
+// Strudel's transpiler rewrites every double-quoted string in the REPL into a
+// mini() call BEFORE the control runs. So s("bubanj doboš") never receives a
+// string — it receives a Pattern whose hap values are the words. Translating
+// only raw strings therefore silently does nothing in the real REPL, which is
+// exactly how untranslated names reach the audio engine. Handle both.
+function translateValue(v, map) {
+  if (typeof v === 'string') return translateTokens(v, map);
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    let out = null;
+    for (const k of ['s', 'sound', 'value', 'scale', 'bank']) {
+      if (typeof v[k] === 'string') {
+        const t = translateTokens(v[k], map);
+        if (t !== v[k]) (out ??= { ...v })[k] = t;
+      }
+    }
+    return out ?? v;
+  }
+  return v;
+}
+
+function translateArg(a, map) {
+  if (typeof a === 'string') return translateTokens(a, map);
+  // a Pattern — map the translation over its values
+  if (a && typeof a === 'object') {
+    if (typeof a.fmap === 'function') return a.fmap((v) => translateValue(v, map));
+    if (typeof a.withValue === 'function') return a.withValue((v) => translateValue(v, map));
+  }
+  return a;
 }
 
 // Shared, accumulating translation tables. They must be module level and
@@ -93,16 +126,16 @@ function wrapValueFn(name, mapKey, aliasNames) {
 
   // Already wrapped by an earlier locale — the shared map now holds the new
   // words, so only the aliases of this locale still need binding.
-  if (orig.__strudla) {
+  if (orig.__vrtlog) {
     for (const a of aliasNames) if (globalThis[a] === undefined) globalThis[a] = orig;
     return;
   }
 
   const wrapped = function (...args) {
-    if (typeof args[0] === 'string') args[0] = translateTokens(args[0], map);
+    if (args.length) args[0] = translateArg(args[0], map);
     return orig.apply(this, args);
   };
-  wrapped.__strudla = true;
+  wrapped.__vrtlog = true;
   Object.setPrototypeOf(wrapped, orig);
   Object.assign(wrapped, orig);
   globalThis[name] = wrapped;
@@ -114,13 +147,13 @@ function wrapValueFn(name, mapKey, aliasNames) {
 
   // keep the Pattern method in step, so .zvuk("bubanj") translates too
   const proto = findPatternProto();
-  if (proto && typeof proto[name] === 'function' && !proto[name].__strudla) {
+  if (proto && typeof proto[name] === 'function' && !proto[name].__vrtlog) {
     const m = proto[name];
     const mw = function (...args) {
-      if (typeof args[0] === 'string') args[0] = translateTokens(args[0], map);
+      if (args.length) args[0] = translateArg(args[0], map);
       return m.apply(this, args);
     };
-    mw.__strudla = true;
+    mw.__vrtlog = true;
     proto[name] = mw;
   }
 }
@@ -168,13 +201,13 @@ function applyLocale(dict) {
   return n;
 }
 
-export async function initStrudla(options = {}) {
+export async function initVrtlog(options = {}) {
   const { locale = 'sr-latn', note = false, quiet = false } = options;
   const codes = asList(locale);
   let total = 0;
   for (const code of codes) {
     const dict = LOCALES[String(code).toLowerCase()];
-    if (!dict) { console.warn(`[strudla] nepoznat lokalitet: ${code}`); continue; }
+    if (!dict) { console.warn(`[vrtlog] nepoznat lokalitet: ${code}`); continue; }
     total += applyLocale(dict);
     if (note && dict.notes) {
       for (const [en, aliases] of Object.entries(dict.notes)) {
@@ -185,17 +218,17 @@ export async function initStrudla(options = {}) {
     active.push(code);
   }
   if (!findPatternProto() && !quiet) {
-    console.warn('[strudla] Pattern prototype nije pronađen — metode (.brzo) nisu instalirane. ' +
-                 'Pokreni initStrudla() iz strudel.cc REPL-a.');
+    console.warn('[vrtlog] Pattern prototype nije pronađen — metode (.brzo) nisu instalirane. ' +
+                 'Pokreni initVrtlog() iz strudel.cc REPL-a.');
   }
   if (!quiet) {
-    console.log(`[strudla] ${active.join(', ')} — ${total} psevdonima instalirano. ` +
+    console.log(`[vrtlog] ${active.join(', ')} — ${total} psevdonima instalirano. ` +
                 `Probaj: zvuk("bubanj doboš").brzo(2)`);
   }
-  return strudlaInfo();
+  return vrtlogInfo();
 }
 
-export function strudlaInfo() {
+export function vrtlogInfo() {
   return {
     active: [...active],
     functions: Object.fromEntries(installed.functions),
@@ -221,18 +254,18 @@ export function recnik(word) {
       ?? null;
 }
 
-globalThis.initStrudla = initStrudla;
-globalThis.strudlaInfo = strudlaInfo;
+globalThis.initVrtlog = initVrtlog;
+globalThis.vrtlogInfo = vrtlogInfo;
 globalThis.recnik = recnik;
 globalThis.rečnik = recnik;
 
 // ── self-install on import ─────────────────────────────────────────────────
 // Importing the module is the whole setup step. Guarded so a second import
 // (or a re-run of the same line) does not reinstall or re-log.
-if (!globalThis.__strudlaLoaded) {
-  globalThis.__strudlaLoaded = true;
-  await initStrudla();
+if (!globalThis.__vrtlogLoaded) {
+  globalThis.__vrtlogLoaded = true;
+  await initVrtlog();
 }
 
 export { LOCALES };
-export default initStrudla;
+export default initVrtlog;

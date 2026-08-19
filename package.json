@@ -1,12 +1,12 @@
 {
-  "name": "strudla-serbian-dialect",
+  "name": "vrtlog-serbian-dialect",
   "version": "0.1.0",
-  "description": "Strudla — Serbian dialect for strudel.cc: 116 functions aliased in Latin and Cyrillic, plus sound, scale and colour names — await import(), no Strudel changes",
+  "description": "Vrtlog — Serbian dialect for strudel.cc: 116 functions aliased in Latin and Cyrillic, plus sound, scale and colour names — await import(), no Strudel changes",
   "type": "module",
-  "main": "dist/strudla.js",
-  "module": "dist/strudla.js",
+  "main": "dist/vrtlog.js",
+  "module": "dist/vrtlog.js",
   "exports": {
-    ".": "./dist/strudla.js"
+    ".": "./dist/vrtlog.js"
   },
   "files": ["dist", "locales", "tools", "README.md", "LICENSE"],
   "scripts": {
@@ -19,6 +19,6 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Spiraldiver/strudla-serbian-dialect.git"
+    "url": "https://github.com/Spiraldiver/vrtlog-serbian-dialect.git"
   }
 }

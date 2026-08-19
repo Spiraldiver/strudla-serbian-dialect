@@ -1,4 +1,4 @@
-# Strudla
+# Vrtlog
 
 **Srpski dijalekt za [Strudel](https://strudel.cc) — live coding na srpskom,
 latinicom i ćirilicom.**
@@ -7,7 +7,7 @@ latinicom i ćirilicom.**
 Cyrillic script.*
 
 ```js
-await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
+await import('https://spiraldiver.github.io/vrtlog-serbian-dialect/dist/vrtlog.js')
 
 zvuk("bubanj [~ doboš] bubanj pljesak")
   .brzo(2)
@@ -36,32 +36,32 @@ import — importing IS the setup.*
 
 ```js
 // jednom po sesiji / once per session
-await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
+await import('https://spiraldiver.github.io/vrtlog-serbian-dialect/dist/vrtlog.js')
 ```
 
 Rezervni URL-ovi / mirrors:
 
 ```js
-await import('https://cdn.jsdelivr.net/gh/Spiraldiver/strudla-serbian-dialect@main/dist/strudla.js')
-await import('https://cdn.statically.io/gh/Spiraldiver/strudla-serbian-dialect/main/dist/strudla.js')
+await import('https://cdn.jsdelivr.net/gh/Spiraldiver/vrtlog-serbian-dialect@main/dist/vrtlog.js')
+await import('https://cdn.statically.io/gh/Spiraldiver/vrtlog-serbian-dialect/main/dist/vrtlog.js')
 ```
 
 > `raw.githubusercontent.com` **ne radi** — servira `text/plain`, pa ga pregledač
 > odbija kao modul. Mora GitHub Pages, jsDelivr ili Statically.
 
-Posle prvog učitavanja radi i `await initStrudla()` direktno.
+Posle prvog učitavanja radi i `await initVrtlog()` direktno.
 
 | poziv | šta radi |
 |---|---|
 | *(sam import)* | latinica, automatski |
-| `initStrudla()` | latinica (podrazumevano) |
-| `initStrudla({ locale: 'sr-cyrl' })` | ćirilica |
-| `initStrudla({ locale: ['sr-latn','sr-cyrl'] })` | oba pisma odjednom |
-| `initStrudla({ note: true })` | germansko `h` = H (vidi dole) |
-| `strudlaInfo()` | spisak svih aktivnih psevdonima |
+| `initVrtlog()` | latinica (podrazumevano) |
+| `initVrtlog({ locale: 'sr-cyrl' })` | ćirilica |
+| `initVrtlog({ locale: ['sr-latn','sr-cyrl'] })` | oba pisma odjednom |
+| `initVrtlog({ note: true })` | germansko `h` = H (vidi dole) |
+| `vrtlogInfo()` | spisak svih aktivnih psevdonima |
 | `rečnik("brzo")` | `"fast"` — engleski original bilo koje srpske reči |
 
-Srpski i engleski rade **istovremeno**. Strudla ništa ne uklanja — `s("bd").fast(2)`
+Srpski i engleski rade **istovremeno**. Vrtlog ništa ne uklanja — `s("bd").fast(2)`
 i dalje radi normalno.
 
 ---
@@ -73,7 +73,7 @@ plus zvuci, lestvice, boje i konstante.
 
 ### Osnovno
 
-| Strudel | Strudla | latinica bez kvačica |
+| Strudel | Vrtlog | latinica bez kvačica |
 |---|---|---|
 | `s` / `sound` | `zvuk` | |
 | `note` | `nota` | |
@@ -146,7 +146,7 @@ b-mol (B flat)**. Ovo je isključeno podrazumevano jer menja značenje standardn
 `b`. Uključi svesno:
 
 ```js
-initStrudla({ note: true })
+initVrtlog({ note: true })
 ```
 
 ---
@@ -155,12 +155,12 @@ initStrudla({ note: true })
 
 Tri različita mehanizma, jer Strudel ima tri vrste imena:
 
-1. **Funkcije i metode** (`fast`, `.gain`) su *identifikatori*. Strudla ih
+1. **Funkcije i metode** (`fast`, `.gain`) su *identifikatori*. Vrtlog ih
    preslikava na `globalThis` i na `Pattern.prototype`. Ćirilica i slova sa
    kvačicama su validni JavaScript identifikatori, pa `.брзо(2)` stvarno radi.
 
 2. **Imena zvukova i lestvica** (`"bd"`, `"major"`) su *string vrednosti*, ne
-   identifikatori — ne mogu se preslikati kao metode. Strudla umotava `s()` i
+   identifikatori — ne mogu se preslikati kao metode. Vrtlog umotava `s()` i
    `scale()` i prevodi reči unutar stringa, ostavljajući mini-notaciju netaknutu.
 
 3. **Boje i konstante** su obične globalne vrednosti.
@@ -176,7 +176,7 @@ Jedini fajl koji se uređuje rukom je `locales/sr-latn.json`. Sve ostalo se
 generiše.
 
 ```bash
-# regeneriši ćirilicu + dist/strudla.js
+# regeneriši ćirilicu + dist/vrtlog.js
 python tools/build.py --canon tools/strudel_canonical.txt \
                       --icelandic reference/is.json
 
@@ -209,7 +209,7 @@ besmislen.
 
 ## Zahvalnost / Credits
 
-Strudla sledi [Rista-vél](https://codeberg.org/jarmitage/strudel), islandski
+Vrtlog sledi [Rista-vél](https://codeberg.org/jarmitage/strudel), islandski
 dijalekt Strudela (Jack Armitage, Dagur Kristjánsson), koji je pokazao da
 lokalizacija live coding jezika ima smisla. Islandski rečnik je korišćen kao
 referenca za strukturu i pokrivenost.

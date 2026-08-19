@@ -1,4 +1,4 @@
-// Strudla runtime test against a mock Strudel.
+// Vrtlog runtime test against a mock Strudel.
 // Verifies the alias installation actually works, rather than assuming it does.
 //   node tools/test.mjs
 
@@ -7,7 +7,7 @@ const ok = (cond, msg) => { cond ? (pass++, console.log('  ok   ' + msg))
                                  : (fail++, console.log('  FAIL ' + msg)); };
 
 // ── mock Strudel ───────────────────────────────────────────────────────────
-// Mirrors the shapes Strudla depends on: a Pattern class with chainable
+// Mirrors the shapes Vrtlog depends on: a Pattern class with chainable
 // methods, controls exposed on globalThis, and string args for s()/scale().
 class Pattern {
   constructor(v = []) { this.v = v; this.log = []; }
@@ -26,14 +26,23 @@ globalThis.note = (x) => mk(`note(${x})`);
 globalThis.scale = (x) => mk(`scale(${x})`);
 globalThis.fast = (n, p) => p.fast(n);
 globalThis.silence = new Pattern();
+// Strudel's transpiler rewrites "..." into mini(...) BEFORE the control runs,
+// so controls receive a Pattern, not a string. This mock mini reproduces that.
+class MiniPat {
+  constructor(words) { this.words = words; }
+  queryArc() { return []; }
+  fmap(fn) { return new MiniPat(this.words.map(fn)); }
+  toString() { return this.words.join(' '); }
+}
+globalThis.mini = (str) => new MiniPat(String(str).split(/\s+/));
 globalThis.stack = (...a) => mk('stack');
 globalThis.hush = () => 'hush';
 
-const { initStrudla, strudlaInfo, recnik } = await import('../dist/strudla.js');
+const { initVrtlog, vrtlogInfo, recnik } = await import('../dist/vrtlog.js');
 
 // ── 1. install ─────────────────────────────────────────────────────────────
 console.log('\n1. installation');
-const info = await initStrudla({ quiet: true });  // self-installed on import; this is idempotent
+const info = await initVrtlog({ quiet: true });  // self-installed on import; this is idempotent
 ok(info.counts.functions >= 15, `${info.counts.functions} function aliases installed (mock exposes only a few Strudel names)`);
 ok(info.counts.sounds > 10, `${info.counts.sounds} sound aliases installed`);
 ok(info.counts.scales > 10, `${info.counts.scales} scale aliases installed`);
@@ -69,6 +78,18 @@ ok(p3.log[0] === 's(bd*2 [cp hh])',
 const p4 = globalThis.zvuk('bd sd');
 ok(p4.log[0] === 's(bd sd)', 'English sound names still work');
 
+// ── 5b. THE SHIPPED BUG: argument arrives as a Pattern, not a string ───────
+// s("bubanj") in the real REPL is s(mini("bubanj")). Translating only raw
+// strings silently no-ops and untranslated names reach the audio engine.
+console.log('\n5b. Pattern-valued argument (transpiler path)');
+const mp = globalThis.zvuk(globalThis.mini('bubanj doboš pljesak'));
+const got = mp.log[0];
+ok(got === 's(bd sd cp)', `mini("bubanj doboš pljesak") -> bd sd cp   (got ${got})`);
+const mp2 = globalThis.zvuk(globalThis.mini('bubanj:2'));
+ok(mp2.log[0] === 's(bd:2)', `sample:index head translated   (got ${mp2.log[0]})`);
+const mp3 = globalThis.scale(globalThis.mini('c:dur'));
+ok(mp3.log[0] === 'scale(c:major)', `root:scale tail translated   (got ${mp3.log[0]})`);
+
 // ── 6. scale translation ───────────────────────────────────────────────────
 console.log('\n6. scale translation');
 const p5 = globalThis.scale('c:dur');
@@ -98,7 +119,7 @@ ok(p7.log.includes('fast(4)'), 'English API unchanged');
 
 // ── 10. Cyrillic locale ────────────────────────────────────────────────────
 console.log('\n10. Cyrillic');
-await initStrudla({ locale: 'sr-cyrl', quiet: true });
+await initVrtlog({ locale: 'sr-cyrl', quiet: true });
 ok(typeof globalThis.звук === 'function', 'звук installed');
 ok(typeof Pattern.prototype.брзо === 'function', 'брзо installed on Pattern');
 const p8 = globalThis.звук('бубањ').брзо(2);
