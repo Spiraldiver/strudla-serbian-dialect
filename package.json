@@ -1,0 +1,24 @@
+{
+  "name": "strudla-serbian-dialect",
+  "version": "0.1.0",
+  "description": "Strudla — Serbian dialect for strudel.cc: 116 functions aliased in Latin and Cyrillic, plus sound, scale and colour names — await import(), no Strudel changes",
+  "type": "module",
+  "main": "dist/strudla.js",
+  "module": "dist/strudla.js",
+  "exports": {
+    ".": "./dist/strudla.js"
+  },
+  "files": ["dist", "locales", "tools", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "python tools/build.py --canon tools/strudel_canonical.txt --icelandic reference/is.json",
+    "canon": "python tools/extract_canonical.py ../strudel",
+    "test": "node tools/test.mjs"
+  },
+  "keywords": ["strudel", "livecoding", "uzulang", "serbian", "srpski", "cyrillic", "localization", "tidalcycles", "algorave"],
+  "author": "Spiraldiver (Luka Sladakovic)",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Spiraldiver/strudla-serbian-dialect.git"
+  }
+}
