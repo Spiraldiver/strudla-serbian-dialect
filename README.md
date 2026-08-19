@@ -305,4 +305,4 @@ referenca za strukturu i pokrivenost.
 
 ## Licenca
 
-AGPL-3.0-only, isto kao Strudel.
+AGPL-3.0-only, isto kao Strudel. Copyright (C) 2026 Spiraldiver.
