@@ -121,6 +121,7 @@
     "delay": ["kašnjenje", "odloži"],
     "delaytime": ["vremeKašnjenja"],
     "delayfeedback": ["povratnaSprega"],
+    "delaysync": ["sinhronKašnjenja"],
     "detune": ["raštimuj"],
 
     "scale": ["lestvica", "skala"],
