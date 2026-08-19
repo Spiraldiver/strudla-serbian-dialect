@@ -46,8 +46,24 @@ await import('https://cdn.jsdelivr.net/gh/Spiraldiver/strudla-serbian-dialect@ma
 await import('https://cdn.statically.io/gh/Spiraldiver/strudla-serbian-dialect/main/dist/strudla.js')
 ```
 
+> **Navodnici su bitni.** Strudelov transpiler pretvara **svaki dvostruko
+> navedeni string** u mini-notaciju. URL nije validna mini-notacija, pa
+> `import("https://…")` puca sa `[mini] parse error … but "/" found`.
+> Koristi **jednostruke** navodnike za URL i za `locale`. Dvostruki ostaju za
+> muzičke obrasce: `zvuk("bubanj doboš")`.
+>
+> *Quoting matters. Strudel's transpiler rewrites every double-quoted string into
+> mini-notation. A URL isn't valid mini-notation, so `import("https://…")` fails
+> with `[mini] parse error`. Use single quotes for the URL and for `locale`;
+> double quotes stay for musical patterns.*
+
 > `raw.githubusercontent.com` **ne radi** — servira `text/plain`, pa ga pregledač
 > odbija kao modul. Mora GitHub Pages, jsDelivr ili Statically.
+>
+> jsDelivr agresivno kešira `@main` — ume da servira staru verziju satima.
+> GitHub Pages je uvek svež; za jsDelivr zakači verziju (`@v0.2.1`).
+> *jsDelivr caches `@main` hard and can serve a stale build for hours. Pages is
+> always fresh; with jsDelivr, pin a tag.*
 
 Posle prvog učitavanja radi i `await initStrudla()` direktno.
 
@@ -68,14 +84,15 @@ i dalje radi normalno.
 
 ## Rečnik / Dictionary
 
-**116 funkcija**, 167 psevdonima na latinici (uključujući verzije bez dijakritika),
-plus zvuci, lestvice, boje i konstante.
+**192 funkcije**, 261 psevdonim na latinici (uključujući verzije bez dijakritika),
+plus zvuci, lestvice, signali, boje i konstante. Pokriva 69% Strudel imena koja
+izlaže STOP.
 
 ### Osnovno
 
 | Strudel | Strudla | latinica bez kvačica |
 |---|---|---|
-| `s` / `sound` | `zvuk` | |
+| `s` / `sound` | `zvuk`, `z` | |
 | `note` | `nota` | |
 | `fast` | `brzo` | |
 | `slow` | `sporo` | |
@@ -90,6 +107,11 @@ plus zvuci, lestvice, boje i konstante.
 | `jux` | `razdvoji` | |
 | `chop` | `seckaj` | |
 | `hush` | `utišaj`, `tiho` | `utisaj` |
+| `sine` / `cosine` | `sinus`, `kosinus` | |
+| `saw` / `tri` / `square` | `pila`, `trougaoni`, `kvadratni` | |
+| `rand` | `slučajno` | `slucajno` |
+| `often` / `rarely` | `često`, `retko` | `cesto` |
+| `swing` / `stut` | `njihanje`, `mucanje` | |
 
 Svaka reč sa dijakritikom ima i verziju bez njih, jer se srpski u praksi često
 kuca bez kvačica. `jačina` i `jacina` su ista funkcija.
