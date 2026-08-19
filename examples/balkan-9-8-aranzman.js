@@ -1,51 +1,45 @@
 await import('https://spiraldiver.github.io/strudla-serbian-dialect/dist/strudla.js')
 samples('github:Spiraldiver/samples_percs')
 
-// 9/8 — grupisano 2+2+2+3 (dajčovo), 300 osmina u minuti
-// ceo komad: 16 taktova
-setcpm(300/9)
+// 9/8 — 2+2+2+3 (dajčovo), 300 osmina u minuti, 1 ciklus = 1 takt
+postaviCkm(300/9)
 
-// ── bubnjevi ─────────────────────────────────────────────────────────────
+// SVE je poravnato na 9: svaki obrazac ima tačno 9 koraka
 const kik    = broj("<0 ~ ~ ~ 0 ~ ~ ~ ~>*9").zvuk("crate_bd").preseci(1).jačina(1.0)
 const dobos  = broj("<~ ~ 0 ~ ~ ~ 0 ~ ~>*9").zvuk("crate_sd").preseci(2).jačina(0.62)
 const hetovi = broj("<0 0 0 0 0 0 0 0 0>*9").zvuk("crate_hh").preseci(3)
-  .jačina("0.86 0.4 0.7 0.4 0.7 0.4 0.86 0.4 0.4")
+  .jačina("0.9 0.35 0.7 0.35 0.7 0.35 0.9 0.35 0.35")
 const perk   = broj("<~ ~ ~ ~ ~ ~ 0 ~ ~>*9").zvuk("crate_rd").preseci(4).jačina(0.44)
 
-// ── bas ──────────────────────────────────────────────────────────────────
 const bas = nota("d2 ~ d2 ~ a1 ~ bb1 ~ ~")
   .zvuk("testera").niskopropusni(400).rezonanca(6).jačina(0.7)
 
-// ── sintisajzer ──────────────────────────────────────────────────────────
+// kašnjenje pribijeno na 3/9 ciklusa = tačno 3 osmine (podrazumevano je 3/16 — van mreže)
 const sint = nota("0 1 4 3 2 1 0 -3 [0 1]")
   .lestvica("d:frigijska:dominantna")
   .zvuk("testera")
   .niskopropusni(sinus.opseg(600, 3200)).rezonanca(14)
-  .kašnjenje(0.25).soba(0.3).jačina(0.45)
+  .kašnjenje(0.3).sinhronKašnjenja(3/9)
+  .soba(0.3).jačina(0.45)
 
-// ── bubnjevi: 4 dela po 4 takta ──────────────────────────────────────────
 const bubnjeviArr = aranžman(
   [4, slog(kik, hetovi)],
   [4, slog(kik, hetovi, dobos)],
   [4, slog(kik, hetovi, dobos, perk)],
-  [4, slog(kik.često(x => x.brzo(2)), hetovi, dobos.razdvoji(unazad), perk)]
+  [4, slog(kik.često(x => x.brzo(3)), hetovi, dobos.razdvoji(unazad), perk)]
 )
 
-// ── bas: ćuti 8 taktova, pa STABILAN do kraja ────────────────────────────
-const basArr = aranžman(
-  [8, tišina],
-  [8, bas]
-)
+const basArr = aranžman([8, tišina], [8, bas])
 
-// ── sintisajzer: sopstveni duboki aranžman, 8 delova po 2 takta ──────────
+// smenjuj(3) a NE (4): iter pomera za i/n ciklusa — 1/3 = 3 koraka, 1/4 = 2.25 (van mreže)
 const sintArr = aranžman(
   [2, tišina],
   [2, sint],
   [2, sint.svaki(2, unazad)],
-  [2, sint.smenjuj(4)],
-  [2, sint.brzo(2).razgradiSa(0.25)],
+  [2, sint.smenjuj(3)],
+  [2, sint.brzo(3).razgradiSa(0.25)],
   [2, sint.razdvoji(unazad)],
-  [2, sint.ponekadSa(0.5, x => x.brzo(2))],
+  [2, sint.ponekadSa(0.5, x => x.brzo(3))],
   [2, sint.unazad().razdvoji(unazad)]
 )
 
