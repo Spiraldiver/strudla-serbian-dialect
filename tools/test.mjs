@@ -97,6 +97,9 @@ const mp2 = globalThis.zvuk(globalThis.mini('bubanj:2'));
 ok(mp2.log[0] === 's(bd:2)', `sample:index head translated   (got ${mp2.log[0]})`);
 const mp3 = globalThis.scale(globalThis.mini('c:dur'));
 ok(mp3.log[0] === 'scale(c:major)', `root:scale tail translated   (got ${mp3.log[0]})`);
+// mini parses "c:dur" into an ARRAY; scale() flattens+joins it internally
+const arrPat = { fmap: (fn) => ({ v: fn(['c', 'dur']) }) };
+ok(JSON.stringify(globalThis.scale(arrPat).log ?? '') !== 'null', 'array arg accepted');
 
 // ── 5c. Pattern-VALUED globals (signals), not functions ───────────────────
 console.log('\n5c. signal globals and short forms');

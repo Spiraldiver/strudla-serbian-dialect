@@ -93,7 +93,11 @@ function translateTokens(str, map) {
 // exactly how untranslated names reach the audio engine. Handle both.
 function translateValue(v, map) {
   if (typeof v === 'string') return translateTokens(v, map);
-  if (v && typeof v === 'object' && !Array.isArray(v)) {
+  // Mini parses "c:mol" into an ARRAY ['c','mol'] — scale() then does
+  // scale.flat().join(' ') internally. Skipping arrays meant scale names were
+  // never translated and tonal saw the untranslated word.
+  if (Array.isArray(v)) return v.map((x) => translateValue(x, map));
+  if (v && typeof v === 'object') {
     let out = null;
     for (const k of ['s', 'sound', 'value', 'scale', 'bank']) {
       if (typeof v[k] === 'string') {
